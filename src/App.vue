@@ -1,26 +1,44 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+    <div class="row">
+      <div class="col p-4 d-flex flex-wrap justify-content-between">
+        <Products
+          v-for="(value, key) in products"
+          :key="key"
+          :id="key"
+          :title="value"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import axios from "axios";
+import Products from "./components/Product.vue";
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  components: { Products },
+  data() {
+    return {
+      products: {},
+    };
+  },
+  created() {
+    this.fetchProducts();
+  },
+  computed: {
+    product_url: function () {
+      return `${process.env.VUE_APP_API_URL}/api/products`;
+    },
+  },
+  methods: {
+    fetchProducts: function () {
+      axios.get(this.product_url).then((res) => {
+        this.products = res.data.products;
+        console.log("Products loaded");
+      });
+    },
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
